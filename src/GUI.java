@@ -1,9 +1,8 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 
-class gui implements ActionListener{
+class gui implements MouseListener{
     private static int difficulty = 2;
     private static int gridSize[] = {8, 10, 14, 18, 20, 24};
     private static int easyGrid[][] = new int[gridSize[0]][gridSize[1]];
@@ -59,8 +58,8 @@ class gui implements ActionListener{
             for (int x = 0; x < gridSize[2*difficulty-1]; x++){
                 int number = x + 1 + (gridSize[2*difficulty-1] * y);
                 tiles[y][x] = new JButton(Integer.toString(number));
+                tiles[y][x].addMouseListener(this);
                 playArea.add(tiles[y][x]);
-                tiles[y][x].addActionListener(this);
             }
         }
 
@@ -104,14 +103,34 @@ class gui implements ActionListener{
         sm.guiMethod();
     }
 
-    public void actionPerformed(ActionEvent e) {
-        for (int x = 0; x < gridSize[2*difficulty-2]*gridSize[2*difficulty-1]; x++){
-            if (Integer.toString(x+1).equals(e.getActionCommand())){
-                int yy = x / gridSize[2*difficulty-1];
-                int xx = x % gridSize[2*difficulty-1];
-                System.out.println("Clicked button at (x, y): (" + (xx + 1) + ", " + (yy + 1) + ")");
-                tiles[yy][xx].setText("O");
+    public void mousePressed(MouseEvent e) {
+        JButton clickedButton = (JButton)e.getSource();
+        for (int y = 0; y < gridSize[2*difficulty-2]; y++) {
+            for (int x = 0; x < gridSize[2*difficulty-1]; x++) {
+                if (tiles[y][x] == clickedButton && e.getButton() == MouseEvent.BUTTON1) {
+                    System.out.println("Clicked button at (x, y): (" + (x + 1) + ", " + (y + 1) + ")");
+                    tiles[y][x].setText("O");
+                } else if (tiles[y][x] == clickedButton && e.getButton() == MouseEvent.BUTTON3) {
+                    System.out.println("Clicked button at (x, y): (" + (x + 1) + ", " + (y + 1) + ")");
+                    tiles[y][x].setText("X");
+                }
             }
         }
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
     }
 }
