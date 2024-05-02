@@ -5,11 +5,16 @@ import java.awt.event.*;
 class gui implements MouseListener{
     private static int difficulty = 2;
     private static int gridSize[] = {8, 10, 14, 18, 20, 24};
+    private static int flagSize[] = {10, 40, 99};
     private static int easyGrid[][] = new int[gridSize[0]][gridSize[1]];
     private static int mediumGrid[][] = new int[gridSize[2]][gridSize[3]];
     private static int hardGrid[][] = new int[gridSize[4]][gridSize[5]];
     private static JFrame jframe;
-    private JButton tiles[][] = new JButton[gridSize[2*difficulty-2]][gridSize[2*difficulty-1]];
+    private JButton tiles[][] = new JButton[20][24];
+    JButton reset = new JButton("Reset");
+    JMenuItem easy = new JMenuItem("Easy");
+    JMenuItem medium = new JMenuItem("Medium");
+    JMenuItem hard = new JMenuItem("Hard");
     
     public static String difficultyPicker(int choice){
         if (choice == 0){
@@ -43,14 +48,10 @@ class gui implements MouseListener{
         JPanel playArea = new JPanel();
         playArea.setLayout(new GridLayout(gridSize[2*difficulty-2], gridSize[2*difficulty-1]));
 
-        JLabel flags = new JLabel("Flags left: 40");
+        JLabel flags = new JLabel("Flags left: " + flagSize[difficulty-1]);
         JLabel time = new JLabel("Time: 0s");
-        JButton reset = new JButton("Reset", resetImage);
         JMenuBar menu = new JMenuBar();
         JMenu difficultyDropdown = new JMenu("Difficulty");
-        JMenuItem easy = new JMenuItem("Easy");
-        JMenuItem medium = new JMenuItem("Medium");
-        JMenuItem hard = new JMenuItem("Hard");
         JLabel difficultyLabel = new JLabel("Difficulty: " + difficultyPicker(0));
 
         //JButton tiles[][] = new JButton[gridSize[2*difficulty-2]][gridSize[2*difficulty-1]];
@@ -67,6 +68,9 @@ class gui implements MouseListener{
         difficultyDropdown.add(easy);
         difficultyDropdown.add(medium);
         difficultyDropdown.add(hard);
+        easy.addMouseListener(this);
+        medium.addMouseListener(this);
+        hard.addMouseListener(this);
 
         score.add(reset);
         score.add(flags);
@@ -78,6 +82,53 @@ class gui implements MouseListener{
         jframe.getContentPane().add(BorderLayout.NORTH, score);
         jframe.getContentPane().add(BorderLayout.CENTER, playArea);
         jframe.setVisible(true);
+    }
+
+    public void mousePressed(MouseEvent e) {
+        //JButton e.getSource() = (JButton)e.getSource();
+        //JMenuItem e.getSource() = (JMenuItem)e.getSource();
+        for (int y = 0; y < gridSize[2*difficulty-2]; y++) {
+            for (int x = 0; x < gridSize[2*difficulty-1]; x++) {
+                if (tiles[y][x] == e.getSource() && e.getButton() == MouseEvent.BUTTON1) {
+                    System.out.println("Clicked button at (x, y): (" + (x + 1) + ", " + (y + 1) + ")");
+                    tiles[y][x].setText("O");
+                } else if (tiles[y][x] == e.getSource() && e.getButton() == MouseEvent.BUTTON3) {
+                    System.out.println("Clicked button at (x, y): (" + (x + 1) + ", " + (y + 1) + ")");
+                    tiles[y][x].setText("X");
+                }
+            }
+        }
+
+        gui sm=new gui();
+
+        if (e.getSource() == easy){
+            difficulty = 1;
+            sm.guiMethod();
+        } else if (e.getSource() == medium){
+            difficulty = 2;
+            sm.guiMethod();
+        } else if (e.getSource() == hard){
+            difficulty = 3;
+            sm.guiMethod();
+        } else if (e.getSource() == reset){
+            sm.guiMethod();
+        }
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
     }
 
     public static void main(String args[]){
@@ -101,36 +152,5 @@ class gui implements MouseListener{
         
         gui sm=new gui();
         sm.guiMethod();
-    }
-
-    public void mousePressed(MouseEvent e) {
-        JButton clickedButton = (JButton)e.getSource();
-        for (int y = 0; y < gridSize[2*difficulty-2]; y++) {
-            for (int x = 0; x < gridSize[2*difficulty-1]; x++) {
-                if (tiles[y][x] == clickedButton && e.getButton() == MouseEvent.BUTTON1) {
-                    System.out.println("Clicked button at (x, y): (" + (x + 1) + ", " + (y + 1) + ")");
-                    tiles[y][x].setText("O");
-                } else if (tiles[y][x] == clickedButton && e.getButton() == MouseEvent.BUTTON3) {
-                    System.out.println("Clicked button at (x, y): (" + (x + 1) + ", " + (y + 1) + ")");
-                    tiles[y][x].setText("X");
-                }
-            }
-        }
-    }
-
-    @Override
-    public void mouseClicked(MouseEvent e) {
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent e) {
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent e) {
-    }
-
-    @Override
-    public void mouseExited(MouseEvent e) {
     }
 }
