@@ -204,11 +204,14 @@ class gui implements MouseListener{
 
     public void mousePressed(MouseEvent e) {
         gui sm=new gui();
+        int currentGrid[][] = gridPicker();
         for (int y = 0; y < gridSize[2*difficulty-2]; y++) {
             for (int x = 0; x < gridSize[2*difficulty-1]; x++) {
                 if (tiles[y][x] == e.getSource() && e.getButton() == MouseEvent.BUTTON1) {
                     System.out.println("Clicked button at (x, y): (" + (x + 1) + ", " + (y + 1) + ")");
-                    tiles[y][x].setText("O");
+                    if (!(currentGrid[y][x] == -3)){
+                        tiles[y][x].setText("O");
+                    }
                     if (plantedMines){
                         plantMines(x, y);
                     }
@@ -217,9 +220,14 @@ class gui implements MouseListener{
                     }
                 } else if (tiles[y][x] == e.getSource() && e.getButton() == MouseEvent.BUTTON3) {
                     System.out.println("Flagged button at (x, y): (" + (x + 1) + ", " + (y + 1) + ")");
-                    int currentGrid[][] = gridPicker();
-                    currentGrid[y][x] = -3;
-                    tiles[y][x].setIcon(flagImage);
+                    if (currentGrid[y][x] == -3){
+                        tiles[y][x].setIcon(null);
+                        currentGrid[y][x] = -2;
+                    } else{   
+                        currentGrid[y][x] = -3;
+                        tiles[y][x].setText("");
+                        tiles[y][x].setIcon(flagImage);
+                    }
                     if (!timer.isRunning()) {
                         timer.start();
                     }
