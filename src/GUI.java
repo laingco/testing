@@ -348,6 +348,7 @@ class gui implements MouseListener{
                         flags++;
                         flagsLabel.setText("Flags left: " + flags);
                         tiles[y][x].setFont(new Font("Serif", Font.PLAIN, 8));
+                        flagged[y][x] = false;
                     } else /*if(currentGrid[y][x] < 0)*/{   
                         //tiles[y][x].setText("");
                         tiles[y][x].setFont(new Font("Serif", Font.PLAIN, 0));
