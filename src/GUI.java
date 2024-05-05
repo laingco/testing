@@ -10,7 +10,7 @@ class gui implements MouseListener{
     private int mediumGrid[][] = new int[gridSize[2]][gridSize[3]];
     private int hardGrid[][] = new int[gridSize[4]][gridSize[5]];
     private JFrame jframe = new JFrame("Minesweeper test");   //create JFrame object
-    private JButton tiles[][] = new JButton[20][24]; // -2 = safe to click -1 = bomb 0 = uncovered
+    private JButton tiles[][] = new JButton[20][24]; // -2 = safe to click -1 = bomb 0 = uncovered 1-7 = no. of mines nearby
     private boolean flagged[][] = new boolean[20][24];
     private int flags = 0;
     private JLabel flagsLabel = new JLabel("Flags left: " + flags);
@@ -101,11 +101,12 @@ class gui implements MouseListener{
                 int currentGrid[][] = new int[gridSize[2*difficulty-2]][gridSize[2*difficulty-1]];
                 currentGrid = gridPicker();
                 if(currentGrid[y][x] == 0){
+                    //tiles[y][x] = new JButton(uncoveredButton);
+                    tiles[y][x] = new JButton(Integer.toString(currentGrid[y][x]));
+                } else if(currentGrid[y][x] == -2){
                     tiles[y][x] = new JButton();
-                /* } else if(currentGrid[y][x] == -3){
-                    tiles[y][x] = new JButton(flagImage); */
-                } else if(currentGrid[y][x] == 0){
-                    tiles[y][x] = new JButton(uncoveredButton);
+                } else if (flagged[y][x]){
+                    tiles[y][x] = new JButton(flagImage);
                 } else{
                     tiles[y][x] = new JButton(Integer.toString(currentGrid[y][x]));
                 }
@@ -171,6 +172,7 @@ class gui implements MouseListener{
             int randY = (int) Math.floor(Math.random() * gridSize[2 * difficulty - 2]);
             if (!(grid[randY][randX] == -1) && !(randX == xx && randY == yy)) {
                 grid[randY][randX] = -1;
+                System.out.print(randX + randY + "b ");
                 z++;
             }
         }
@@ -238,6 +240,12 @@ class gui implements MouseListener{
         }
         guiMethod();
         plantedMines = true;
+        for (int y = 0; y < gridSize[2 * difficulty - 2]; y++) {
+            for (int x = 0; x < gridSize[2 * difficulty - 1]; x++) {
+                System.out.print(grid[y][x]);
+            }
+            System.out.println();
+        }
     }
 
     public void resetGrids(){
@@ -256,12 +264,59 @@ class gui implements MouseListener{
         for (int y = 0; y < gridSize[4]; y++){
             for (int x = 0; x < gridSize[5]; x++){
                 hardGrid[y][x] = -2;
+                flagged[y][x] = false;
             }
         }
         flags = flagSize[difficulty-1];
         plantedMines = false;
         timer.restart();
         timer.stop();
+    }
+
+    public void domainExpansion(int y, int x){
+        int grid[][] = gridPicker();
+        if (!(grid[y][x] == -1)) {
+            if (x > 0) {
+                if (grid[y][x - 1] == -1) {
+                    
+                }
+                if (y > 0) {
+                    if (grid[y - 1][x - 1] == -1) {
+                        
+                    }
+                }
+                if (y + 1 < gridSize[2 * difficulty - 2]) {
+                    if (grid[y + 1][x - 1] == -1) {
+                        
+                    }
+                }
+            }
+            if (x + 1 < gridSize[2 * difficulty - 1]) {
+                if (grid[y][x + 1] == -1) {
+                    
+                }
+                if (y > 0) {
+                    if (grid[y - 1][x + 1] == -1) {
+                        
+                    }
+                }
+                if (y + 1 < gridSize[2 * difficulty - 2]) {
+                    if (grid[y + 1][x + 1] == -1) {
+                        
+                    }
+                }
+            }
+            if (y > 0) {
+                if (grid[y - 1][x] == -1) {
+                    
+                }
+            }
+            if (y + 1 < gridSize[2 * difficulty - 2]) {
+                if (grid[y + 1][x] == -1) {
+                    
+                }
+            }
+        }
     }
 
     public void mousePressed(MouseEvent e) {
@@ -275,6 +330,7 @@ class gui implements MouseListener{
                         guiMethod();
                     } else if (currentGrid[y][x] == 0){
                         tiles[y][x].setIcon(uncoveredButton);
+                        domainExpansion(y, x);
                         guiMethod();
                     }
                     if (!plantedMines){
@@ -291,14 +347,14 @@ class gui implements MouseListener{
                         tiles[y][x].setIcon(null);
                         flags++;
                         flagsLabel.setText("Flags left: " + flags);
-                    } else{   
-                        tiles[y][x].setText("");
+                        tiles[y][x].setFont(new Font("Serif", Font.PLAIN, 8));
+                    } else /*if(currentGrid[y][x] < 0)*/{   
+                        //tiles[y][x].setText("");
+                        tiles[y][x].setFont(new Font("Serif", Font.PLAIN, 0));
                         tiles[y][x].setIcon(flagImage);
                         flags--;
                         flagsLabel.setText("Flags left: " + flags);
-                    }
-                    if (!timer.isRunning()) {
-                        timer.start();
+                        flagged[y][x] = true;
                     }
                 } else if (e.getSource() == whiteAndGrey){
                     if(y%2==0){
@@ -361,7 +417,7 @@ class gui implements MouseListener{
 
     public static void main(String args[]){
         gui sm=new gui();
-        sm.guiMethod();
         sm.resetGrids();
+        sm.guiMethod();
     }
 }
