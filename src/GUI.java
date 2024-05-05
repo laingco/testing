@@ -10,7 +10,7 @@ class gui implements MouseListener{
     private int mediumGrid[][] = new int[gridSize[2]][gridSize[3]];
     private int hardGrid[][] = new int[gridSize[4]][gridSize[5]];
     private JFrame jframe = new JFrame("Minesweeper test");   //create JFrame object
-    private JButton tiles[][] = new JButton[20][24]; // -2 = safe to click -1 = bomb 0 = uncovered 1-7 = no. of mines nearby
+    private JButton tiles[][] = new JButton[20][24]; // -2 = uncovered -1 = bomb 0 = safe to click 1-7 = no. of mines nearby
     private boolean flagged[][] = new boolean[20][24];
     private int flags = 0;
     private JLabel flagsLabel = new JLabel("Flags left: " + flags);
